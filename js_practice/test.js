@@ -1,7 +1,9 @@
 const h1 = document.querySelector('#title')
-let age = 30
-let firstname = "jason"
-let content = "裁縫"
+const user = {
+    firstname : 'jason',
+    age : 30,
+    content : "裁縫"
+}
 
 //課題1
 //jsの場合、テンプレートリテラルを使用する場合`(バックオートで囲む)
@@ -10,7 +12,7 @@ const hello = (firstname, age, content) =>
 
 //要素が存在する場合
 if(h1){
-    h1.innerHTML = hello(firstname, age, content)
+    h1.innerHTML = hello(user.firstname, user.age, user.content)
 }else{
     //要素が見つからない場合
     console.log("要素#titleが見つかりません")
@@ -51,3 +53,7 @@ const addCount = () => {
         console.log("要素countが存在しません")
     }
 }
+//id=countplusを取得
+const ctn = document.querySelector("#countPlus")
+//クリック時に第二引数の関数を起動
+ctn.addEventListener('click', addCount, false)
