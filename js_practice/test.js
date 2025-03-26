@@ -23,8 +23,8 @@ if(h1){
 const arry = ["リンゴ","みかん","ブドウ","なし","ようかん","ファミチキ"]
 
 //要素がnullではない　かつ　要素が配列の場合
-if(array !== null && Array.isArray(arry)){
-    項目をひとつづつ出力する
+if(arry !== null && Array.isArray(arry)){
+    //項目をひとつづつ出力する
     arry.forEach(value =>{
         console.log(value)
     })
