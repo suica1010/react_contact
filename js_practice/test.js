@@ -1,4 +1,3 @@
-console.log(document.querySelector('#title'))
 const h1 = document.querySelector('#title')
 let age = 30
 let firstname = "jason"
@@ -17,15 +16,38 @@ if(h1){
     console.log("要素#titleが見つかりません")
 }
 
-
 //課題2
 //要件・配列をひとつづつコンソールへ出力
-const arry = ["リンゴ","みかん","ブドウ","なし","ようかん","ファミチキ"]
+const array = ["リンゴ","みかん","ブドウ","なし","ようかん","ファミチキ"]
+
+//みかん以外の場合trueを返す
+let mikanFilter = (value) =>{
+    return value != "みかん"
+}
 
 //要素がnullではない　かつ　要素が配列の場合
-if(arry !== null && Array.isArray(arry)){
+if(array !== null && Array.isArray(array)){
     //項目をひとつづつ出力する
-    arry.forEach(value =>{
+    array.forEach(value =>{
         console.log(value)
     })
+    //みかんを削除
+    console.log(array.filter(mikanFilter))
+    //すべて大文字に変換して出力
+    const enArray = ["test", "tttt", "setting"]
+    const map1 = enArray.map((value) => value.toUpperCase()) 
+    map1.forEach((value) => console.log(value))
+}
+
+//課題3:クリックカウンター(DOM操作)
+const count = document.querySelector("#count")
+const addCount = () => {
+    let i = +count.innerHTML
+    //カウント属性がある場合
+    if(count !== null){
+        count.innerHTML = i + 1
+        console.log(count.innerHTML)
+    } else {
+        console.log("要素countが存在しません")
+    }
 }
