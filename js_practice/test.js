@@ -48,7 +48,6 @@ const addCount = () => {
     //カウント属性がある場合
     if(count !== null){
         count.innerHTML = i + 1
-        console.log(count.innerHTML)
     } else {
         console.log("要素countが存在しません")
     }
@@ -57,3 +56,25 @@ const addCount = () => {
 const ctn = document.querySelector("#countPlus")
 //クリック時に第二引数の関数を起動
 ctn.addEventListener('click', addCount, false)
+
+
+//課題4
+//非同期処理とapi通信
+//URLを開く
+let url = "https://jsonplaceholder.typicode.com/users"
+let apiRtn = async ()=>{
+    try{
+        //fetchでurlにアクセス(awaitで読み込むまで次の行並行しない)
+        const response = await fetch(url)
+        //json形式へ変換
+        const data = await response.json()
+        //順番に値を出力
+        data.forEach(data=>{
+            console.log(`${data.name}:${data.email}:${data.address.city}`)
+        })
+    }catch(error){
+        console.log(`API接続エラー:${error}`)
+    }
+}
+
+ctn.addEventListener('click', apiRtn, false)
