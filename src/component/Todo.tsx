@@ -6,30 +6,32 @@ export default function Todo(){
     const [listName, setListName] = useState("")
     const [id, setId] = useState(0)
 
+
     //リストへ追加
     const listAdd = () => {
-        setId(id + 1)
+        if(listName.trim() === "") return
         setTodos([...todos, {name: listName, listId:id}])
+        setId(prev => prev + 1)
+        setListName("")
     }
     //名称の取得
-    const listNameAdd = (e) => {
-        setListName(e.target.value)
-    }
+    const listNameAdd = (e) => setListName(e.target.value)
 
     return (
         <div>
             <ul>
                 {
-                    todos.map((value, index) => (
+                    todos.map((value) => (
                         <li key={value.listId}>{value.name}
                         <button onClick={() => 
                             setTodos(todos.filter(e => (
                                 e.listId !== value.listId
                             )))
                         }>削除</button></li>
+
                 ))}
             </ul>
-            リスト<input type="text" value={listName} onChange={listNameAdd}/>
+            リスト<input type="text" value={listName} onChange={listNameAdd} id="addList"/>
             <button onClick={listAdd}>追加</button>
         </div>
     )
