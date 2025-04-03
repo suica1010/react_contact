@@ -10,7 +10,7 @@ export default function ApiGet() {
         setUsers(prev => [...prev, {id:value.id, userName: value.username, email: value.email}])
     }
 
-    //user追加処理
+    //user
     useEffect(() => {
         const usersAdd = async () => {
             const response = await fetch(url)
@@ -25,9 +25,10 @@ export default function ApiGet() {
                 email: value.email
             }))
             //返還後、users配列に追加する
-            dataList.forEach((value) => {
-                usersSet(value)
-            })
+            setUsers(formated)
+            // dataList.forEach((value) => {
+            //     usersSet(value)
+            // })
         }
         //起動
         usersAdd()
@@ -39,7 +40,7 @@ export default function ApiGet() {
             <ul>
                 {
                     users.map((value) => {
-                        return <li>{value.id}:{value.userName}:{value.email}</li>
+                        return <li key={value.id}>{value.id}:{value.userName}:{value.email}</li>
                     })
                 }
             </ul>
