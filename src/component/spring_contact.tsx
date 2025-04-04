@@ -1,5 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import EditTemplate from './button/editTemplate.tsx'
+import SendForm from './button/sendTemplate.tsx'
+import List from './button/list.tsx'
+import styles from '../list.module.css'
 
 export default function SpringGet() {
     const [message, setMessage] = useState("")
@@ -9,8 +13,17 @@ export default function SpringGet() {
     const [email, setEmail] = useState("")
     const [content, setContent] = useState("")
     const url = "http://localhost:8080/api/"
-    const regex = "^[a-zA-Z0-9_+-]+(.[a-zA-Z0-9_+-]+)*@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$"
+    const regex = "^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$"
 
+    //List用
+    const updateListField = (e, field, id) => {
+        const newContent = e.target.value
+        setList(prev => 
+            prev.map(item => item.id === id ? {...item, [field]: newContent } :item)
+        )
+    }
+
+    //登録用
     //名前設定
     const NameAdd = (e) => {
         setName(e.target.value)
@@ -27,7 +40,6 @@ export default function SpringGet() {
     //springへの送信処理
     const sendForm = async (e) => {
         e.preventDefault()
-        console.log(list)
         const springSaveUrl = url + "save"
         //値が入力されている場合
         if(name !== "" && email !== "" && content !== ""){
@@ -42,7 +54,6 @@ export default function SpringGet() {
                         email: email,
                         content: content
                     })
-                    console.log(res.data)
                 } catch (error) {
                     console.error('error', error)
                 }
@@ -50,9 +61,6 @@ export default function SpringGet() {
                 setEmail("")
                 setContent("")
                 setRender("post")
-                console.log(name)
-                console.log(email)
-                console.log(content)
                 //fetchの場合は以下処理
                 // fetch(springSaveUrl, {
                 //     method: "POST",
@@ -73,24 +81,64 @@ export default function SpringGet() {
 
     //削除処理
     const ListDelete = async (value) => {
-        console.log(value)
         const deleteUrl = `${url}delete/${value}`
         const response = await axios.delete(deleteUrl)
         setRender("delete")
+    }
+
+    //保存処理
+    const EditSave = async (value) => {
+        const updateUrl = `${url}update/${value.id}`
+        let response = await axios.put(updateUrl, {
+            name: value.name,
+            email: value.email,
+            content: value.content
+        })
+
+        setList(list.map(item => 
+            item.id === value.id 
+            ? {...item, editFlg: false} 
+            : item
+        ))
+        setRender("update")
+    }
+
+    //編集キャンセル
+    const EditCancel = (e) => {
+        console.log("EditCancel")
+        setList(list.map(item => 
+            item.id === e.id 
+            ? {...item, editFlg: false} 
+            : item
+        ))
+        setRender("cancel")
+        console.log(list)
+    }
+
+    //編集項目出力
+    const trueEdit = async (e) => {
+        console.log("trueEdit")
+        await setList(list.map(item => 
+            item.id === e.id 
+           ? {...item, editFlg: true} 
+           : item
+        ))
+        setRender("true")
     }
     
     //リスト追加処理
     useEffect(() => {
         setList([])
         const sprinGetUrl = url + "get"
-        const DataGet = async () => {
+        const DataGet = async (e) => {
             const response = await fetch(sprinGetUrl)
             const data = await response.json()
             const format = data.map(value => ({
                 id: value.id,
                 name: value.name,
                 email: value.email,
-                content: value.content
+                content: value.content,
+                editFlg: list.find(item => item.id === value.id)?.editFlg === undefined ? false : list.find(item => item.id === value.id)?.editFlg
             }))
             setList(format)
         }
@@ -99,20 +147,47 @@ export default function SpringGet() {
 
     return (
         <div>
-            <ul>
-                <form action="" onSubmit={sendForm}>
-                    Name<input type="text" onChange={NameAdd} value={name}/>
-                    Email<input type="text" onChange={EmailAdd} value={email}/>
-                    content<textarea onChange={ContentAdd} value={content}></textarea>
-                    <button type="submit">送信</button>
-                </form>
-                {list.map((value, key) => {
-                    return <li key={key}>
-                        {value.id}:{value.name}:{value.email}:{value.content}
-                        <button type="submit" onClick={() => ListDelete(value.id)}>削除</button>
-                    </li>
-                })}
-            </ul>
+                    <SendForm 
+                        name={name}
+                        email={email}
+                        content={content}
+                        sendForm={sendForm}
+                        NameAdd={NameAdd}
+                        EmailAdd={EmailAdd}
+                        ContentAdd={ContentAdd}
+                        />
+                    <h3>一覧</h3>
+            <table className={styles.ListTable}>
+                <thead>
+                    <th>名前</th>
+                    <th>Email</th>
+                    <th>内容</th>
+                    <th>編集</th>
+                </thead>
+                <tbody>
+                    {
+                        list.map(value => 
+                            value.editFlg ? (
+                                <EditTemplate 
+                                    EditSave={EditSave}
+                                    EditCancel={EditCancel}
+                                    list={list}
+                                    setList={setList}
+                                    value={value}
+                                    updateListField={updateListField}
+                                />
+                            ):(
+                                <List 
+                                    value={value}
+                                    ListDelete={ListDelete}
+                                    trueEdit={trueEdit}
+                                />
+                            )
+                        )
+                    }
+
+                </tbody>
+            </table>
         </div>
     )
 }

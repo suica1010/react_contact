@@ -1,0 +1,12 @@
+table, th, td{
+    table-layout: fixed;
+    width:100%;
+    border:1px black solid;
+}
+
+button {
+    background: lightgrey;
+    color: black;
+    border:1px black solid;
+    margin:2px;
+}
