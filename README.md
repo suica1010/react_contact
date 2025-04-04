@@ -1,54 +1,34 @@
-# React + TypeScript + Vite
+#Contact Form App -  react + spring boot
+このシステムは、react+Spring boot を使用して構築した簡易のリスト管理アプリです。
+Reactで構築されたフロントエンドと、Spring bootによるRestful APIを用いたバックエンドを連携させています。
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+#デモ
+※AWSに配置予定(URL準備中)
 
-Currently, two official plugins are available:
+#使用技術
+##フロントエンド
+- react v19.0.0
+- Hooks (useState/ useEffect/ prpops)
+- axios / fetchによる非同期処理
+- コンポーネント分割による構造化
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+#実装機能
+- リスト新規登録(POST)
+- 一覧表示(GET)
+- 各項目の編集(PUT)
+- 各項目の削除(DELETE)
+- バリデーション処理(空チェック、形式チェック)
 
-## Expanding the ESLint configuration
+#工夫したポイント
+- Reactでのコンポーネント分割と状態管理
+- 一覧表示と編集の切り替え制御
+- Axiosとfetchの使い分けで通信処理の学習も兼ねた構成
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+#今後の予定
+[ ] AWS上での本番デプロイ (ECS or Render or Vercel連携)
+[ ] Spring securityによる認証追加
+[ ] フロントのデザイン強化 (Tailwind CSSやMUI導入検討)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## 📄 ライセンス
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+このプロジェクトはMITライセンスのもとで公開されています。

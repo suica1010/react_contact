@@ -55,7 +55,7 @@ export default function SpringGet() {
                         content: content
                     })
                 } catch (error) {
-                    console.error('error', error)
+                    console.error('通信に失敗しました', error)
                 }
                 setName("")
                 setEmail("")
@@ -82,25 +82,33 @@ export default function SpringGet() {
     //削除処理
     const ListDelete = async (value) => {
         const deleteUrl = `${url}delete/${value}`
-        const response = await axios.delete(deleteUrl)
-        setRender("delete")
+        try{
+            const response = await axios.delete(deleteUrl)
+            setRender("delete")
+        }catch(error ){
+            console.error("通信に失敗しました", error)
+        }
     }
 
     //保存処理
     const EditSave = async (value) => {
         const updateUrl = `${url}update/${value.id}`
-        let response = await axios.put(updateUrl, {
-            name: value.name,
-            email: value.email,
-            content: value.content
-        })
+        try{
+            let response = await axios.put(updateUrl, {
+                name: value.name,
+                email: value.email,
+                content: value.content
+            })
 
-        setList(list.map(item => 
-            item.id === value.id 
-            ? {...item, editFlg: false} 
-            : item
-        ))
-        setRender("update")
+            setList(list.map(item => 
+                item.id === value.id 
+                ? {...item, editFlg: false} 
+                : item
+            ))
+            setRender("update")
+        }catch(error){
+            console.error("通信に失敗しました", error)
+        }
     }
 
     //編集キャンセル
@@ -131,16 +139,20 @@ export default function SpringGet() {
         setList([])
         const sprinGetUrl = url + "get"
         const DataGet = async (e) => {
-            const response = await fetch(sprinGetUrl)
-            const data = await response.json()
-            const format = data.map(value => ({
-                id: value.id,
-                name: value.name,
-                email: value.email,
-                content: value.content,
-                editFlg: list.find(item => item.id === value.id)?.editFlg === undefined ? false : list.find(item => item.id === value.id)?.editFlg
-            }))
-            setList(format)
+            try{
+                const response = await fetch(sprinGetUrl)
+                const data = await response.json()
+                const format = data.map(value => ({
+                    id: value.id,
+                    name: value.name,
+                    email: value.email,
+                    content: value.content,
+                    editFlg: list.find(item => item.id === value.id)?.editFlg === undefined ? false : list.find(item => item.id === value.id)?.editFlg
+                }))
+                setList(format)
+            }catch (error) {
+                console.error('通信に失敗しました', error)
+            }
         }
         DataGet()
     },[render]) //マウント時・レンダー変数が変更された際に再描画
