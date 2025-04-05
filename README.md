@@ -1,3 +1,6 @@
+#このブランチはJS学習用のブランチです
+
+
 #Contact Form App -  react + spring boot
 このシステムは、react+Spring boot を使用して構築した簡易のリスト管理アプリです。
 Reactで構築されたフロントエンドと、Spring bootによるRestful APIを用いたバックエンドを連携させています。
