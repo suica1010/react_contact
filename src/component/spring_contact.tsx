@@ -60,7 +60,7 @@ export default function SpringGet() {
                 setName("")
                 setEmail("")
                 setContent("")
-                setRender("post")
+                setRender(Date.now())
                 //fetchの場合は以下処理
                 // fetch(springSaveUrl, {
                 //     method: "POST",
@@ -84,7 +84,7 @@ export default function SpringGet() {
         const deleteUrl = `${url}delete/${value}`
         try{
             const response = await axios.delete(deleteUrl)
-            setRender("delete")
+            setRender(Date.now())
         }catch(error ){
             console.error("通信に失敗しました", error)
         }
@@ -105,7 +105,7 @@ export default function SpringGet() {
                 ? {...item, editFlg: false} 
                 : item
             ))
-            setRender("update")
+            setRender(Date.now())
         }catch(error){
             console.error("通信に失敗しました", error)
         }
@@ -119,7 +119,7 @@ export default function SpringGet() {
             ? {...item, editFlg: false} 
             : item
         ))
-        setRender("cancel")
+        setRender(Date.now())
         console.log(list)
     }
 
@@ -131,7 +131,7 @@ export default function SpringGet() {
            ? {...item, editFlg: true} 
            : item
         ))
-        setRender("true")
+        setRender(Date.now())
     }
     
     //リスト追加処理
@@ -167,8 +167,9 @@ export default function SpringGet() {
                         NameAdd={NameAdd}
                         EmailAdd={EmailAdd}
                         ContentAdd={ContentAdd}
+                        Styles={styles}
                         />
-                    <h3>一覧</h3>
+                    <h3 className={styles.ListTitle}>一覧</h3>
             <table className={styles.ListTable}>
                 <thead>
                     <th>名前</th>

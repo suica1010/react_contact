@@ -1,12 +1,50 @@
-table, th, td{
-    table-layout: fixed;
-    width:100%;
-    border:1px black solid;
+.ListTable {
+  table-layout: fixed;
+  width: 90vw;
+  border-collapse: collapse;
+  margin-left: 2vw;
+  margin-right: 2vw;
+}
+
+.ListTable th, .ListTable td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: left;
 }
 
 button {
-    background: lightgrey;
-    color: black;
-    border:1px black solid;
-    margin:2px;
+  background: lightgrey;
+  color: black;
+  border: 1px solid black;
+  margin-top: 3px;
+  margin-bottom: 5px;
+  margin-left: 2vw;
+}
+
+.FormTable {
+  border-collapse: collapse;
+  margin-left: 2vw;
+}
+
+.FormTable th, .FormTable td {
+  border: 1px solid black;
+  padding: 8px;
+}
+
+.FormTable th {
+  width: 10vh;
+}
+
+.FormTable td {
+  width: 40vh;
+}
+
+input[type="text"], textarea { 
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px;
+}
+
+.ListTitle {
+    margin-left: 2vw;
 }
