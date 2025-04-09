@@ -6,17 +6,36 @@ import List from './button/list.tsx'
 import styles from '../list.module.css'
 
 export default function SpringGet() {
-    const [message, setMessage] = useState("")
-    const [render, setRender] = useState("")
-    const [list, setList] = useState([])
+    const [render, setRender] = useState<string | number>("")
+    const [list, setList] = useState<Array<{
+        id: number,
+        name: string,
+        email: string,
+        content: string,
+        editFlg?: boolean
+    }>>([])
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [content, setContent] = useState("")
     const url = "http://localhost:8080/api/"
-    const regex = "^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$"
+    // const awsUrl = "http://ec2-54-168-57-4.ap-northeast-1.compute.amazonaws.com/api/"
+    const awsUrl = "https://ne1z4vlk16.execute-api.ap-northeast-1.amazonaws.com/SpringAPI/"
+    const LOCAL = "localhost"
+    const regex = "^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\\.)+[a-zA-Z]{2,}$"
+    type ListTp = {
+        id: number;
+        name: string;
+        email: string;
+        content: string;
+        editFlg?: boolean;
+    }
 
     //List用
-    const updateListField = (e, field, id) => {
+    const updateListField = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        field: string,
+        id: number
+    ) => {
         const newContent = e.target.value
         setList(prev => 
             prev.map(item => item.id === id ? {...item, [field]: newContent } :item)
@@ -25,22 +44,24 @@ export default function SpringGet() {
 
     //登録用
     //名前設定
-    const NameAdd = (e) => {
+    const NameAdd = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setName(e.target.value)
     }
     //email設定
-    const EmailAdd = (e) => {
+    const EmailAdd = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setEmail(e.target.value)
     }
     //コンテンツ設定
-    const ContentAdd = (e) => {
+    const ContentAdd = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setContent(e.target.value)
     }
 
     //springへの送信処理
-    const sendForm = async (e) => {
+    const sendForm = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const springSaveUrl = url + "save"
+        //url判定後取得
+        const currentUrl = location.href.match(LOCAL) ? url : awsUrl
+        const springSaveUrl = currentUrl
         //値が入力されている場合
         if(name !== "" && email !== "" && content !== ""){
             //eメールの形式ではない場合
@@ -54,6 +75,7 @@ export default function SpringGet() {
                         email: email,
                         content: content
                     })
+                    console.log(res)
                 } catch (error) {
                     console.error('通信に失敗しました', error)
                 }
@@ -80,42 +102,46 @@ export default function SpringGet() {
     }
 
     //削除処理
-    const ListDelete = async (value) => {
-        const deleteUrl = `${url}delete/${value}`
+    const ListDelete = async (value: number) => {
+        const currentUrl = location.href.match(LOCAL) ? url : awsUrl
+        const deleteUrl = `${currentUrl}${value}`
         try{
             const response = await axios.delete(deleteUrl)
+            console.log(response)
             setRender(Date.now())
         }catch(error ){
-            console.error("通信に失敗しました", error)
+            console.error("通信に失敗しました:delete", error)
         }
     }
 
     //保存処理
-    const EditSave = async (value) => {
-        const updateUrl = `${url}update/${value.id}`
+    const EditSave = async (value: ListTp) => {
+        const currentUrl = location.href.match(LOCAL) ? url : awsUrl
+        const updateUrl = `${currentUrl}${value.id}`
         try{
-            let response = await axios.put(updateUrl, {
+            const response = await axios.put(updateUrl, {
                 name: value.name,
                 email: value.email,
                 content: value.content
             })
 
             setList(list.map(item => 
-                item.id === value.id 
+                item.id === Number(value.id)
                 ? {...item, editFlg: false} 
                 : item
             ))
+            console.log(response)
             setRender(Date.now())
         }catch(error){
-            console.error("通信に失敗しました", error)
+            console.error("通信に失敗しました:edit", error)
         }
     }
 
     //編集キャンセル
-    const EditCancel = (e) => {
+    const EditCancel = (id: number) => {
         console.log("EditCancel")
         setList(list.map(item => 
-            item.id === e.id 
+            item.id === Number(id) 
             ? {...item, editFlg: false} 
             : item
         ))
@@ -124,10 +150,10 @@ export default function SpringGet() {
     }
 
     //編集項目出力
-    const trueEdit = async (e) => {
+    const trueEdit = async (id: number) => {
         console.log("trueEdit")
         await setList(list.map(item => 
-            item.id === e.id 
+            item.id === Number(id) 
            ? {...item, editFlg: true} 
            : item
         ))
@@ -137,12 +163,20 @@ export default function SpringGet() {
     //リスト追加処理
     useEffect(() => {
         setList([])
-        const sprinGetUrl = url + "get"
-        const DataGet = async (e) => {
+        //url判定後取得
+        const currentUrl = location.href.match(LOCAL) ? url : awsUrl
+        const sprinGetUrl = currentUrl
+        const DataGet = async () => {
             try{
-                const response = await fetch(sprinGetUrl)
+                const response = await fetch(sprinGetUrl, {
+                    method: 'GET',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    }
+                })
                 const data = await response.json()
-                const format = data.map(value => ({
+
+                const format = data.map((value: ListTp) => ({
                     id: value.id,
                     name: value.name,
                     email: value.email,
@@ -151,7 +185,7 @@ export default function SpringGet() {
                 }))
                 setList(format)
             }catch (error) {
-                console.error('通信に失敗しました', error)
+                console.error('通信に失敗しました:list', error)
             }
         }
         DataGet()
@@ -172,25 +206,28 @@ export default function SpringGet() {
                     <h3 className={styles.ListTitle}>一覧</h3>
             <table className={styles.ListTable}>
                 <thead>
-                    <th>名前</th>
-                    <th>Email</th>
-                    <th>内容</th>
-                    <th>編集</th>
+                    <tr>
+                        <th>名前</th>
+                        <th>Email</th>
+                        <th>内容</th>
+                        <th>編集</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {
                         list.map(value => 
                             value.editFlg ? (
                                 <EditTemplate 
+                                    key={value.id}
                                     EditSave={EditSave}
                                     EditCancel={EditCancel}
                                     list={list}
-                                    setList={setList}
                                     value={value}
                                     updateListField={updateListField}
                                 />
                             ):(
                                 <List 
+                                    key={value.id}
                                     value={value}
                                     ListDelete={ListDelete}
                                     trueEdit={trueEdit}

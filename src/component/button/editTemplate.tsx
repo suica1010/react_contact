@@ -1,5 +1,26 @@
+type ListTp = {
+    id: number,
+    name: string,
+    email: string,
+    content: string,
+    editFlg?: boolean,
+}
+type listType = {
+    updateListField: (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        field: string,
+        id: number) => void,
+    EditSave: (
+        value: ListTp
+    ) => void,
+    EditCancel: (
+        value: number
+    ) => void
+    list: ListTp[]
+    value: ListTp
+}
 
-export default function EditTemplate(props){
+export default function EditTemplate(props: listType){
     return(
         <>
             <tr>
@@ -14,7 +35,7 @@ export default function EditTemplate(props){
                 </td>
                 <td>
                     <button onClick={() => props.EditSave(props.value)}>保存</button>
-                    <button onClick={() => props.EditCancel(props.value)}>キャンセル</button>
+                    <button onClick={() => props.EditCancel(props.value.id)}>キャンセル</button>
                 </td>
             </tr>
         </>
